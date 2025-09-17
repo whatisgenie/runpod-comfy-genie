@@ -2,8 +2,7 @@
 # Start from the latest base image available on Docker Hub
 FROM runpod/worker-comfyui:5.4.1-base
 
-# Install custom nodes using comfy-node-install (RunPod's custom CLI)
-# RUN comfy-node-install comfyui-kjnodes comfyui-ic-light
+# Install huggingface-hub CLI
 RUN pip install -U "huggingface_hub[cli]"
 
 RUN hf auth login --token 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 --add-to-git-credential
@@ -24,6 +23,12 @@ RUN hf download Comfy-Org/Wan_2.2_ComfyUI_Repackaged ./split_files/diffusion_mod
 
 # Install additional Python packages if needed
 # RUN pip install your-custom-package
+
+# Fix missing model paths for WAN models (PR #166 not merged yet)
+# This is at the bottom so model downloads can be cached when we rebuild
+RUN echo "  diffusion_models: models/diffusion_models/" >> /src/extra_model_paths.yaml && \
+    echo "  audio_encoders: models/audio_encoders/" >> /src/extra_model_paths.yaml && \
+    echo "  text_encoders: models/text_encoders/" >> /src/extra_model_paths.yaml
 
 # Set working directory
 WORKDIR /workspace
