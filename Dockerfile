@@ -6,7 +6,7 @@ FROM runpod/worker-comfyui:5.4.1-base
 # RUN comfy-node-install comfyui-kjnodes comfyui-ic-light
 RUN pip install -U "huggingface_hub[cli]"
 
-RUN hf auth login --token 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
+RUN hf auth login --token ${HF_TOKEN}
 
 RUN hf download Kijai/WanVideo_comfy Wan2_1_VAE_bf16.safetensors --local-dir models/vae
 
